@@ -5,10 +5,8 @@ import UserModel from "../models/user.js";
 const SECRET_KEY = "test";
 
 // const maxAge = 3 * 24 * 60 * 60;
-const createToken = (id) => {
-  return jwt.sign({ id }, SECRET_KEY, {
-    expiresIn: "1h",
-  });
+const createToken = (email) => {
+  return jwt.sign({ email }, SECRET_KEY);
 };
 
 export const signin = async (req, res) => {
@@ -33,18 +31,10 @@ export const signin = async (req, res) => {
     // );
     // res.status(200).json({ data: result, token });
 
-    const token = createToken(result._id);
-    // console.log("gen token", token);
-    // res.cookie("jwt", token, { httpOnly: false, maxAge: maxAge * 1000 });
-    // res.cookie("jwt", token);
-    // res.setHeader("Set-Cookie", "jwt=" + token; Secure; HttpOnly; SameSite=None; Path=/; Max-Age=99999999;");
-    // res.setHeader(
-    //   "Set-Cookie",
-    //   `jwt=${token}; Secure; HttpOnly; SameSite=None; Path=127.0.0.1; Max-Age=99999999;`
-    // );
-    res.cookie("newUser", token);
-
-    res.status(201).json({ result });
+    // const token = createToken(result._id);
+    // const {password, ...other} = result
+    res.cookie("newUser", result.token);
+    res.status(201).json(result );
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
     console.error(error);
@@ -60,11 +50,13 @@ export const signup = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
+    const generateToken = createToken(email);
 
     const result = await UserModel.create({
       email,
       password: hashedPassword,
       name: `${firstName} ${lastName}`,
+      token: generateToken
     });
 
     // const token = jwt.sign(
@@ -73,8 +65,8 @@ export const signup = async (req, res) => {
     //   { expiresIn: "1h" }
     // );
 
-    const token = createToken(result._id);
-    console.log("gen token", token);
+    // const token = createToken(result._id);
+    // console.log("gen token", token);
     // res.cookie("jwt", token, { httpOnly: false, maxAge: maxAge * 1000 });
 
     res.status(201).json({ result });

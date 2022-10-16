@@ -18,6 +18,9 @@ const userSchema = {
   id: {
     type: "string",
   },
+  token:{
+    type: "string"
+  }
 };
 
 export default mongoose.model("User", userSchema);
