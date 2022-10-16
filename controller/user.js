@@ -35,7 +35,7 @@ export const signin = async (req, res) => {
     res.cookie("jwt_token", token,{
       httpOnly: true,
       secure: false,
-      domain: "http://localhost:3000/"
+      domain: "https://hotels-rest-api-production.up.railway.app"
     });
 
     // const {password, ...other} = result
