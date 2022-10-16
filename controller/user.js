@@ -32,12 +32,11 @@ export const signin = async (req, res) => {
     // res.status(200).json({ data: result, token });
 
     const token = createToken(result._id);
-    res.cookie("jwt_token", token,{
-      httpOnly: true,
-      secure: false,
-      domain: "https://hotels-rest-api-production.up.railway.app"
-    });
-
+    
+    res.setHeader(
+      "Set-Cookie",
+      `jwt=${token}; Secure; HttpOnly; SameSite=None; Path=127.0.0.1; Max-Age=99999999;`
+    );
     // const {password, ...other} = result
     res.status(201).json(result );
   } catch (error) {
