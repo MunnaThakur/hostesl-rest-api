@@ -32,11 +32,13 @@ export const signin = async (req, res) => {
     // res.status(200).json({ data: result, token });
 
     const token = createToken(result._id);
-    
-    res.setHeader(
-      "Set-Cookie",
-      `jwt=${token}; Secure; HttpOnly; SameSite=None; Path=127.0.0.1; Max-Age=99999999;`
-    );
+    res.cookie("jwt", token, {
+      domain:'localhost'
+    })
+    // res.setHeader(
+    //   "Set-Cookie",
+    //   `jwt=${token}; Secure; HttpOnly; SameSite=None; Path=127.0.0.1; Max-Age=99999999;`
+    // );
     // const {password, ...other} = result
     res.status(201).json(result );
   } catch (error) {
