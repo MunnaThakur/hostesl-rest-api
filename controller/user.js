@@ -31,9 +31,10 @@ export const signin = async (req, res) => {
     // );
     // res.status(200).json({ data: result, token });
 
-    // const token = createToken(result._id);
+    const token = createToken(result._id);
+    res.cookie("jwt_token", token);
+
     // const {password, ...other} = result
-    res.cookie("newUser", result.token);
     res.status(201).json(result );
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
@@ -50,13 +51,11 @@ export const signup = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
-    const generateToken = createToken(email);
 
     const result = await UserModel.create({
       email,
       password: hashedPassword,
       name: `${firstName} ${lastName}`,
-      token: generateToken
     });
 
     // const token = jwt.sign(
