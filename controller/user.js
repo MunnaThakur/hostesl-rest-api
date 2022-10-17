@@ -24,7 +24,7 @@ export const signin = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    // const token = await jwt.sign(
+    // const token = await jwt.sign(` 
     //   { email: result.email, id: result._id },
     //   SECRET_KEY,
     //   { expiresIn: "1h" }
@@ -32,15 +32,15 @@ export const signin = async (req, res) => {
     // res.status(200).json({ data: result, token });
 
     const token = createToken(result._id);
-    res.cookie("jwt", token, {
-      domain:'localhost'
-    })
+    // res.cookie("jwt", token, {
+    //   domain:'localhost'
+    // })
     // res.setHeader(
     //   "Set-Cookie",
     //   `jwt=${token}; Secure; HttpOnly; SameSite=None; Path=127.0.0.1; Max-Age=99999999;`
     // );
     // const {password, ...other} = result
-    res.status(201).json(result );
+    res.status(201).json({result, token} );
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
     console.error(error);
