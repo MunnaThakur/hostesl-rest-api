@@ -13,12 +13,8 @@ app.use(cookieParser());
 app.use(morgan("dev"));
 app.use(express.json({ limit: "30mb", extended: true }));
 app.use(express.urlencoded({ limit: "30mb", extended: true }));
-app.use(
-  cors({
-    origin: "*",
-    credentials: true,
-  })
-);
+app.use(cors({credentials: true, origin: "http://localhost:3000"}));
+
 // app.use(
 //   session({
 //     cookie: {
@@ -40,3 +36,5 @@ mongoose
     app.listen(port, () => console.log(`Connected server on port ${port}`));
   })
   .catch((error) => console.log(`${error} did not connect`));
+
+  

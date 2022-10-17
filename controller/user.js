@@ -2,13 +2,6 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import UserModel from "../models/user.js";
 
-const SECRET_KEY = "test";
-
-// const maxAge = 3 * 24 * 60 * 60;
-const createToken = (email) => {
-  return jwt.sign({ email }, SECRET_KEY);
-};
-
 export const signin = async (req, res) => {
   const { email, password } = req.body;
 
@@ -23,24 +16,19 @@ export const signin = async (req, res) => {
     if (!checkPassword) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
+    
+    const token = jwt.sign({id: result._id}, "test",{
+      expiresIn: "1hr"
+    })
+    
+    res.cookie(String(result._id), token, {
+      path: '/',
+      expires: new Date(Date.now() + 1800000),
+      httpOnly: true,
+      sameSite: 'lax'
+    })
 
-    // const token = await jwt.sign(` 
-    //   { email: result.email, id: result._id },
-    //   SECRET_KEY,
-    //   { expiresIn: "1h" }
-    // );
-    // res.status(200).json({ data: result, token });
-
-    const token = createToken(result._id);
-    // res.cookie("jwt", token, {
-    //   domain:'localhost'
-    // })
-    // res.setHeader(
-    //   "Set-Cookie",
-    //   `jwt=${token}; Secure; HttpOnly; SameSite=None; Path=127.0.0.1; Max-Age=99999999;`
-    // );
-    // const {password, ...other} = result
-    res.status(201).json({result, token} );
+     res.status(201).json({result, token} );
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
     console.error(error);
@@ -96,3 +84,18 @@ export const testCookie = (req, res) => {
   res.cookie("newUser", "Narayan");
   res.json({ message: "Cookie is working fine" });
 };
+
+export const getSingleUser = async(req, res, next) =>{
+	const userId= req.id;
+	
+	let user;
+		try{
+		user = await UserModel.findById(userId, "-password");
+		}catch(err){
+		return new Error(err)
+		}
+		if(!user){
+			return res.status(404).json({"message":"user not found"})
+		}
+		return res.status(200).json({user})
+}

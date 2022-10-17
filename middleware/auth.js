@@ -1,21 +1,20 @@
 import jwt from "jsonwebtoken";
 
-const SECRET_KEY = "test";
 
 export const requireAuth = (req, res, next) => {
-  const token = req.cookies.jwt;
+  const cookies = req.headers.cookie;
 
-  if (token) {
-    jwt.verify(token, SECRET_KEY, (err, decodedData) => {
-      if (err) {
-        console.log(err.message);
-        res.json({ message: "error occured" });
-      } else {
-        console.log(decodedData);
-        next();
-      }
-    });
-  } else {
-    res.json({ message: "unauthorised" });
+  const token  = cookies.split("=")[1]
+  
+  if(!token){
+    res.status(404).json({"message":"No token found"});
   }
+  
+  jwt.verify(String(token), "test", (err, user)=>{
+    if(err){
+      return res.status(400).json({"message":"Invalid Token"})
+    }
+    req.id = user.id;
+  })
+  next();
 };
