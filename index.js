@@ -13,7 +13,7 @@ app.use(cookieParser());
 app.use(morgan("dev"));
 app.use(express.json({ limit: "30mb", extended: true }));
 app.use(express.urlencoded({ limit: "30mb", extended: true }));
-app.use(cors({credentials: true, origin: "http://localhost:3000"}));
+app.use(cors({credentials: true, origin: "https://roaring-marigold-295de9.netlify.app"}));
 
 // app.use(
 //   session({
